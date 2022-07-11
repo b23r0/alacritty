@@ -15,6 +15,10 @@ pub mod windows;
 #[cfg(windows)]
 pub use self::windows::*;
 
+pub mod localsocket;
+pub use self::localsocket::*;
+
+
 /// This trait defines the behaviour needed to read and/or write to a stream.
 /// It defines an abstraction over mio's interface in order to allow either one
 /// read/write object or a separate read and write object.
