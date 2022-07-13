@@ -70,6 +70,7 @@ impl WindowContext {
         wayland_event_queue: Option<&EventQueue>,
     ) -> Result<Self, Box<dyn Error>> {
         let mut pty_config = config.terminal_config.pty_config.clone();
+        pty_config.local_socket_port = config.local_socket_port.as_ref().unwrap().clone();
         options.terminal_options.override_pty_config(&mut pty_config);
 
         let mut identity = config.window.identity.clone();

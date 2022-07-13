@@ -13,9 +13,11 @@ pub struct Pty {
 }
 
 /// Create a new localsocket and return a handle to interact with it.
-pub fn new(_config: &PtyConfig, _window_size: WindowSize, _window_id: Option<usize>) -> Result<Pty> {
+pub fn new(config: &PtyConfig, _window_size: WindowSize, _window_id: Option<usize>) -> Result<Pty> {
 
-    let s = TcpStream::connect(&"127.0.0.1:8000".parse().unwrap()).unwrap();
+    let local_addr = format!("127.0.0.1:{}" , config.local_socket_port);
+
+    let s = TcpStream::connect(&local_addr.parse().unwrap()).unwrap();
     Ok(Pty {
         socket : s,
         token: 0.into(),

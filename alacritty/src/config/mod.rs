@@ -120,6 +120,8 @@ pub fn load(options: &Options) -> UiConfig {
 
     after_loading(&mut config, options);
 
+    config.local_socket_port = options.local_socket_port.clone();
+
     config
 }
 
