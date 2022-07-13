@@ -135,7 +135,7 @@ fn default_shell(pw: &Passwd<'_>) -> Program {
 }
 
 /// Create a new TTY and return a handle to interact with it.
-pub fn new(config: &PtyConfig, window_size: WindowSize, window_id: Option<usize>) -> Result<Pty> {
+pub fn _new(config: &PtyConfig, window_size: WindowSize, window_id: Option<usize>) -> Result<Pty> {
     let (master, slave) = make_pty(window_size.to_winsize());
 
     #[cfg(any(target_os = "linux", target_os = "macos"))]

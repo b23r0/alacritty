@@ -9,18 +9,18 @@ use std::io::*;
 pub struct Pty {
     socket : TcpStream,
     token: mio::Token,
-}
-
-impl Pty {
+    child_event_token : mio::Token
 }
 
 /// Create a new localsocket and return a handle to interact with it.
 pub fn new(_config: &PtyConfig, _window_size: WindowSize, _window_id: Option<usize>) -> Result<Pty> {
 
     let s = TcpStream::connect(&"127.0.0.1:8000".parse().unwrap()).unwrap();
-
-    let pty = Pty {socket : s , token : mio::Token::from(1024)};
-    Ok(pty)
+    Ok(Pty {
+        socket : s,
+        token: 0.into(),
+        child_event_token : 0.into()
+    })
 }
 
 impl EventedReadWrite for Pty {
@@ -32,40 +32,36 @@ impl EventedReadWrite for Pty {
         &mut self,
         poll: &mio::Poll,
         token: &mut dyn Iterator<Item = mio::Token>,
-        _interest: mio::Ready,
-        _poll_opts: mio::PollOpt,
+        interest: mio::Ready,
+        poll_opts: mio::PollOpt,
     ) -> Result<()> {
         self.token = token.next().unwrap();
-        poll.register(
-            &self.socket,
-            self.token,
-            mio::Ready::readable(),
-            mio::PollOpt::level(),
-        )
+
+        poll.register(&self.socket, self.token, interest, poll_opts)?;
+
+        self.child_event_token = token.next().unwrap();
+        Ok(())
     }
 
     #[inline]
     fn reregister(
         &mut self,
         poll: &mio::Poll,
-        _interest: mio::Ready,
-        _poll_opts: mio::PollOpt,
+        interest: mio::Ready,
+        poll_opts: mio::PollOpt,
     ) -> Result<()> {
-        poll.reregister(
-            &self.socket,
-            self.token,
-            mio::Ready::readable(),
-            mio::PollOpt::level(),
-        )
+        poll.reregister(&self.socket, self.token, interest, poll_opts)?;
+        Ok(())
     }
 
     #[inline]
     fn deregister(&mut self, poll: &mio::Poll) -> Result<()> {
-        poll.deregister(&self.socket)
+        poll.deregister(&self.socket)?;
+        Ok(())
     }
 
     #[inline]
-    fn reader(&mut self) -> &mut TcpStream {
+    fn reader(&mut self) -> &mut Self::Reader {
         &mut self.socket
     }
 
@@ -75,7 +71,7 @@ impl EventedReadWrite for Pty {
     }
 
     #[inline]
-    fn writer(&mut self) -> &mut TcpStream {
+    fn writer(&mut self) -> &mut Self::Writer {
         &mut self.socket
     }
 
@@ -86,14 +82,12 @@ impl EventedReadWrite for Pty {
 }
 
 impl EventedPty for Pty {
-    #[inline]
-    fn next_child_event(&mut self) -> Option<ChildEvent> {
-        None
+    fn child_event_token(&self) -> mio::Token {
+        self.child_event_token
     }
 
-    #[inline]
-    fn child_event_token(&self) -> mio::Token {
-        self.token
+    fn next_child_event(&mut self) -> Option<ChildEvent> {
+        None
     }
 }
 
