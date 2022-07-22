@@ -22,7 +22,7 @@ fn make_winsize_packet(window_size : WindowSize) -> Vec<u8>{
     let mut ret = vec![];
     ret.append(&mut MAGIC_FLAG.to_vec());
     let rows = splitword(window_size.num_lines);
-    let cols = splitword(window_size.num_lines);
+    let cols = splitword(window_size.num_cols);
 
     ret.push(rows.0);
     ret.push(rows.1);
