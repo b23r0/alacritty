@@ -76,7 +76,10 @@ pub struct Options {
     pub subcommands: Option<Subcommands>,
 
     #[clap(long)]
-    pub local_socket_port : Option<String>
+    pub local_socket_port : Option<String>,
+
+    #[clap(long)]
+    pub sub_title : Option<String>
 }
 
 impl Options {

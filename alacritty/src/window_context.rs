@@ -208,7 +208,11 @@ impl WindowContext {
             && (!config.window.dynamic_title
                 || self.display.window.title() == old_config.window.identity.title)
         {
-            self.display.window.set_title(config.window.identity.title.clone());
+            if let Some(subtitle) = config.window.sub_title.clone(){
+                self.display.window.set_title(format!("{} - {}" , config.window.identity.title.clone(), subtitle));
+            } else {
+                self.display.window.set_title(config.window.identity.title.clone());
+            }
         }
 
         // Set subpixel anti-aliasing.

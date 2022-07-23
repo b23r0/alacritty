@@ -329,8 +329,15 @@ impl Window {
             Icon::from_rgba(buf, info.width, info.height)
         };
 
+        let full_title;
+        if let Some(subtitle) = window_config.sub_title.clone(){
+            full_title = format!("{} - {}", identity.title , subtitle);
+        } else {
+            full_title = identity.title.clone();
+        }
+
         let builder = WindowBuilder::new()
-            .with_title(&identity.title)
+            .with_title(&full_title)
             .with_visible(false)
             .with_transparent(true)
             .with_decorations(window_config.decorations != Decorations::None)
@@ -360,8 +367,15 @@ impl Window {
     pub fn get_platform_window(identity: &Identity, window_config: &WindowConfig) -> WindowBuilder {
         let icon = glutin::window::Icon::from_resource(IDI_ICON, None);
 
+        let full_title;
+        if let Some(subtitle) = window_config.sub_title.clone(){
+            full_title = format!("{} - {}", identity.title , subtitle);
+        } else {
+            full_title = identity.title.clone();
+        }
+
         WindowBuilder::new()
-            .with_title(&identity.title)
+            .with_title(&full_title)
             .with_visible(false)
             .with_decorations(window_config.decorations != Decorations::None)
             .with_transparent(true)
@@ -372,8 +386,16 @@ impl Window {
 
     #[cfg(target_os = "macos")]
     pub fn get_platform_window(identity: &Identity, window_config: &WindowConfig) -> WindowBuilder {
+
+        let full_title;
+        if let Some(subtitle) = window_config.sub_title.clone(){
+            full_title = format!("{} - {}", identity.title , subtitle);
+        } else {
+            full_title = identity.title.clone();
+        }
+
         let window = WindowBuilder::new()
-            .with_title(&identity.title)
+            .with_title(&full_title)
             .with_visible(false)
             .with_transparent(true)
             .with_maximized(window_config.maximized())
