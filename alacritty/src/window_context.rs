@@ -70,6 +70,7 @@ impl WindowContext {
         wayland_event_queue: Option<&EventQueue>,
     ) -> Result<Self, Box<dyn Error>> {
         let mut pty_config = config.terminal_config.pty_config.clone();
+        pty_config.local_socket_port = config.local_socket_port.as_ref().unwrap().clone();
         options.terminal_options.override_pty_config(&mut pty_config);
 
         let mut identity = config.window.identity.clone();
@@ -207,7 +208,11 @@ impl WindowContext {
             && (!config.window.dynamic_title
                 || self.display.window.title() == old_config.window.identity.title)
         {
-            self.display.window.set_title(config.window.identity.title.clone());
+            if let Some(subtitle) = config.window.sub_title.clone(){
+                self.display.window.set_title(format!("{} - {}" , config.window.identity.title.clone(), subtitle));
+            } else {
+                self.display.window.set_title(config.window.identity.title.clone());
+            }
         }
 
         // Disable shadows for transparent windows on macOS.

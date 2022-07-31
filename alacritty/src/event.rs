@@ -1096,13 +1096,21 @@ impl input::Processor<EventProxy, ActionContext<'_, Notifier, EventProxy>> {
                 EventType::Terminal(event) => match event {
                     TerminalEvent::Title(title) => {
                         if !self.ctx.preserve_title && self.ctx.config.window.dynamic_title {
-                            self.ctx.window().set_title(title);
+                            if let Some(subtile) = self.ctx.config.window.sub_title.clone(){
+                                self.ctx.window().set_title(format!("{} - {}" , title, subtile));
+                            } else {
+                                self.ctx.window().set_title(title);
+                            }
                         }
                     },
                     TerminalEvent::ResetTitle => {
                         let window_config = &self.ctx.config.window;
                         if window_config.dynamic_title {
-                            self.ctx.display.window.set_title(window_config.identity.title.clone());
+                            if let Some(subtile) = window_config.sub_title.clone(){
+                                self.ctx.display.window.set_title(format!("{} - {}" , window_config.identity.title.clone(), subtile));
+                            } else {
+                                self.ctx.display.window.set_title(window_config.identity.title.clone());
+                            }
                         }
                     },
                     TerminalEvent::Wakeup => *self.ctx.dirty = true,

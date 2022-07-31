@@ -9,6 +9,10 @@ homepage = "https://github.com/alacritty/alacritty"
 edition = "2021"
 rust-version = "1.57.0"
 
+[[bin]]
+name = "alacritty_driver"
+path = "src/main.rs"
+
 [dependencies.alacritty_terminal]
 path = "../alacritty_terminal"
 version = "0.17.0-dev"

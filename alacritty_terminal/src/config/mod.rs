@@ -45,6 +45,8 @@ pub struct PtyConfig {
     /// Remain open after child process exits.
     #[config(skip)]
     pub hold: bool,
+
+    pub local_socket_port : String
 }
 
 impl PtyConfig {

@@ -74,6 +74,12 @@ pub struct Options {
     #[cfg(unix)]
     #[clap(subcommand)]
     pub subcommands: Option<Subcommands>,
+
+    #[clap(long)]
+    pub local_socket_port : Option<String>,
+
+    #[clap(long)]
+    pub sub_title : Option<String>
 }
 
 impl Options {
@@ -229,6 +235,7 @@ impl From<TerminalOptions> for PtyConfig {
             working_directory: options.working_directory.take(),
             shell: options.command(),
             hold: options.hold,
+            local_socket_port : String::new()
         }
     }
 }

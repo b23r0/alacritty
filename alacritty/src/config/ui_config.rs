@@ -82,6 +82,8 @@ pub struct UiConfig {
     /// Background opacity from 0.0 to 1.0.
     #[config(deprecated = "use window.opacity instead")]
     background_opacity: Option<Percentage>,
+
+    pub local_socket_port : Option<String>
 }
 
 impl Default for UiConfig {
@@ -104,6 +106,7 @@ impl Default for UiConfig {
             colors: Default::default(),
             draw_bold_text_with_bright_colors: Default::default(),
             hints: Default::default(),
+            local_socket_port : Some(String::new())
         }
     }
 }

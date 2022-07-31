@@ -39,6 +39,9 @@ pub struct WindowConfig {
     /// Use dynamic title.
     pub dynamic_title: bool,
 
+    /// Use dynamic title.
+    pub sub_title: Option<String>,
+
     /// Information to identify a particular window.
     #[config(flatten)]
     pub identity: Identity,
@@ -67,6 +70,7 @@ impl Default for WindowConfig {
             opacity: Default::default(),
             padding: Default::default(),
             dimensions: Default::default(),
+            sub_title : Default::default(),
         }
     }
 }
