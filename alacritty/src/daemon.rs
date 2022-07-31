@@ -48,9 +48,7 @@ where
 #[cfg(not(windows))]
 pub fn spawn_daemon<I, S>(
     program: &str,
-    args: I,
-    master_fd: RawFd,
-    shell_pid: u32,
+    args: I
 ) -> io::Result<()>
 where
     I: IntoIterator<Item = S> + Copy,
@@ -58,9 +56,9 @@ where
 {
     let mut command = Command::new(program);
     command.args(args).stdin(Stdio::null()).stdout(Stdio::null()).stderr(Stdio::null());
-    if let Ok(cwd) = foreground_process_path(master_fd, shell_pid) {
-        command.current_dir(cwd);
-    }
+    //if let Ok(cwd) = foreground_process_path(master_fd, shell_pid) {
+    //    command.current_dir(cwd);
+    //}
     unsafe {
         command
             .pre_exec(|| {

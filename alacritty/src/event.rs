@@ -189,10 +189,6 @@ pub struct ActionContext<'a, N, T> {
     pub font_size: &'a mut Size,
     pub dirty: &'a mut bool,
     pub preserve_title: bool,
-    #[cfg(not(windows))]
-    pub master_fd: RawFd,
-    #[cfg(not(windows))]
-    pub shell_pid: u32,
 }
 
 impl<'a, N: Notify + 'a, T: EventListener> input::ActionContext<T> for ActionContext<'a, N, T> {
@@ -391,9 +387,9 @@ impl<'a, N: Notify + 'a, T: EventListener> input::ActionContext<T> for ActionCon
     #[cfg(not(windows))]
     fn create_new_window(&mut self) {
         let mut options = WindowOptions::default();
-        if let Ok(working_directory) = foreground_process_path(self.master_fd, self.shell_pid) {
-            options.terminal_options.working_directory = Some(working_directory);
-        }
+        //if let Ok(working_directory) = foreground_process_path(self.master_fd, self.shell_pid) {
+        ///    options.terminal_options.working_directory = Some(working_directory);
+        //}
 
         let _ = self.event_proxy.send_event(Event::new(EventType::CreateWindow(options), None));
     }
@@ -410,9 +406,9 @@ impl<'a, N: Notify + 'a, T: EventListener> input::ActionContext<T> for ActionCon
         I: IntoIterator<Item = S> + Debug + Copy,
         S: AsRef<OsStr>,
     {
-        #[cfg(not(windows))]
-        let result = spawn_daemon(program, args, self.master_fd, self.shell_pid);
-        #[cfg(windows)]
+        //#[cfg(not(windows))]
+        //let result = spawn_daemon(program, args, self.master_fd, self.shell_pid);
+        //#[cfg(windows)]
         let result = spawn_daemon(program, args);
 
         match result {

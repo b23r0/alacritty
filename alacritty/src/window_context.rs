@@ -52,11 +52,7 @@ pub struct WindowContext {
     font_size: Size,
     mouse: Mouse,
     dirty: bool,
-    preserve_title: bool,
-    #[cfg(not(windows))]
-    master_fd: RawFd,
-    #[cfg(not(windows))]
-    shell_pid: u32,
+    preserve_title: bool
 }
 
 impl WindowContext {
@@ -111,11 +107,6 @@ impl WindowContext {
         // reading/writing to the shell.
         let pty = tty::new(&pty_config, display.size_info.into(), display.window.x11_window_id())?;
 
-        #[cfg(not(windows))]
-        let master_fd = pty.file().as_raw_fd();
-        #[cfg(not(windows))]
-        let shell_pid = pty.child().id();
-
         // Create the pseudoterminal I/O loop.
         //
         // PTY I/O is ran on another thread as to not occupy cycles used by the
@@ -149,10 +140,6 @@ impl WindowContext {
             terminal,
             display,
             preserve_title,
-            #[cfg(not(windows))]
-            master_fd,
-            #[cfg(not(windows))]
-            shell_pid,
             cursor_blink_timed_out: Default::default(),
             suppress_chars: Default::default(),
             message_buffer: Default::default(),
@@ -282,10 +269,6 @@ impl WindowContext {
             mouse: &mut self.mouse,
             dirty: &mut self.dirty,
             terminal: &mut terminal,
-            #[cfg(not(windows))]
-            master_fd: self.master_fd,
-            #[cfg(not(windows))]
-            shell_pid: self.shell_pid,
             preserve_title: self.preserve_title,
             event_proxy,
             event_loop,
