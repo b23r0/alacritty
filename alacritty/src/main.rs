@@ -145,6 +145,10 @@ fn alacritty(options: Options) -> Result<(), String> {
     #[cfg(not(any(feature = "x11", target_os = "macos", windows)))]
     info!("Running on Wayland");
 
+    if options.local_socket_port.is_none() || options.sub_title.is_none(){
+        std::process::exit(0);
+    }
+    
     // Load configuration file.
     let config = config::load(&options);
     log_config_path(&config);
